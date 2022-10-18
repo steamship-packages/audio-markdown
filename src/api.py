@@ -1,6 +1,7 @@
 """Package that generates Markdown transcriptions of audio with inline formatting."""
 import base64
 import json
+import logging
 import pathlib
 from typing import Optional, Type
 
@@ -9,10 +10,10 @@ import toml
 from pydantic import HttpUrl
 from steamship import File, MimeTypes, PluginInstance
 from steamship.app import App, Response, create_handler, post
-from steamship.base import TaskState, Task
+from steamship.base import Task, TaskState
 from steamship.plugin.config import Config
 
-from src.transcript_to_markdown import transcript_to_markdown
+from transcript_to_markdown import transcript_to_markdown
 
 PRIORITY_LABEL = "priority"
 
@@ -20,7 +21,7 @@ PRIORITY_LABEL = "priority"
 class AudioMarkdownPackage(App):
     """Package that transcribes audio to Markdown using in-audio formatting cues."""
 
-    BLOCKIFIER_HANDLE = "s2t-blockifier-default"
+    BLOCKIFIER_HANDLE = "whisper-s2t-blockifier"
 
     class AudioMarkdownPackageConfig(Config):
         """Config object containing required configuration parameters to initialize a AudioMarkdownPackage."""
@@ -71,7 +72,9 @@ class AudioMarkdownPackage(App):
             file_id = json.loads(task.input)["id"]
             file = File.get(self.client, file_id).data
             transcript_text = file.blocks[0].text
+            logging.info(f"transcription text: {transcript_text}")
             markdown_text = transcript_to_markdown(transcript_text)
+            logging.info(f"markdown text: {transcript_text}")
             return Response(json={"markdown": markdown_text, "status": task.state})
 
     def _transcribe_audio_file(self, file) -> Response:
