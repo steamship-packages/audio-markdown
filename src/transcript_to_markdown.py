@@ -1,3 +1,5 @@
+import string
+
 
 def fixed(value: str):
     def heading_function(index: int) -> str:
@@ -22,9 +24,15 @@ MARKDOWN_ELEMENTS_SPLIT = [([text_possibility.split(" ") for text_possibility in
                            for (text_possibilities, prefix_generator, carry_element) in MARKDOWN_ELEMENTS]
 
 
+def clean(token: str) -> str:
+    result = token.lower()
+    if result[-1] in string.punctuation:
+        result = result[:-1]
+    return result
+
 def transcript_to_markdown(transcript: str) -> str:
     input_case_transcript_tokens = transcript.split(" ")
-    lower_case_transcript_tokens = [ token.lower() for token in input_case_transcript_tokens]
+    lower_case_transcript_tokens = [ clean(token) for token in input_case_transcript_tokens]
 
     output_tokens = []
     element_count = 0
