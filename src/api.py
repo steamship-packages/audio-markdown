@@ -1,5 +1,6 @@
 """Package that generates Markdown transcriptions of audio with inline formatting."""
 import base64
+import json
 import pathlib
 from typing import Optional, Type
 
@@ -8,7 +9,10 @@ import toml
 from pydantic import HttpUrl
 from steamship import File, MimeTypes, PluginInstance
 from steamship.app import App, Response, create_handler, post
+from steamship.base import TaskState, Task
 from steamship.plugin.config import Config
+
+from src.transcript_to_markdown import transcript_to_markdown
 
 PRIORITY_LABEL = "priority"
 
@@ -60,13 +64,15 @@ class AudioMarkdownPackage(App):
     @post("get_markdown")
     def get_markdown(self, task_id: str):
         """Get the markdown for a transcribed audio file based on task_id."""
-        # task = Task.get(self.client, _id=task_id).data
-        # if task.state != TaskState.succeeded:
-        #     return InvocableResponse(json={"task_id": task.task_id, "status": task.state})
-        # else:
-        #     file_id = json.loads(task.input)["id"]
-        #     file = File.get(self.client, file_id).data
-        #     return InvocableResponse(json={"task_id": task.task_id, "status": task.state, "file": file.dict()})
+        task = Task.get(self.client, _id=task_id).data
+        if task.state != TaskState.succeeded:
+            return Response(json={"task_id": task.task_id, "status": task.state})
+        else:
+            file_id = json.loads(task.input)["id"]
+            file = File.get(self.client, file_id).data
+            transcript_text = file.blocks[0].text
+            markdown_text = transcript_to_markdown(transcript_text)
+            return Response(json={"markdown": markdown_text, "status": task.state})
 
     def _transcribe_audio_file(self, file) -> Response:
         status = file.blockify(plugin_instance=self.s2t_blockifier.handle)
