@@ -47,7 +47,7 @@ def transcript_to_markdown(transcript: str) -> str:
         if lower_case_transcript_tokens[i : i+2] == ["end", "element"]:
             carried_element = None
             element_count = 0
-            carried_newline = "\n"
+            carried_newline = "\n\n"
             found_replacement = True
             i += 1
         if lower_case_transcript_tokens[i: i + 2] == ["end", "item"]:
