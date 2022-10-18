@@ -44,13 +44,13 @@ def transcript_to_markdown(transcript: str) -> str:
                     if carry_element:
                         carried_element = prefix_generator
                         element_count += 1
-        if lower_case_transcript_tokens[i : i+2] == ["end", "element"]:
+        if lower_case_transcript_tokens[i : i+2] == ["finish", "element"]:
             carried_element = None
             element_count = 0
             carried_newline = "\n\n"
             found_replacement = True
             i += 1
-        if lower_case_transcript_tokens[i: i + 2] == ["end", "item"]:
+        if lower_case_transcript_tokens[i: i + 2] == ["finish", "item"]:
             output_tokens.append("\n"+carried_element(element_count))
             found_replacement = True
             i += 1
