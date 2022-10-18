@@ -15,8 +15,8 @@ MARKDOWN_ELEMENTS = [
     (["heading four", "heading 4"], fixed("####"), False),
     (["heading five", "heading 5"], fixed("#####"), False),
     (["heading six", "heading 6"], fixed("######"), False),
-    (["bullet list", "bulleted list"], fixed("*"), True),
-    (["numbered list", "numbered list"], lambda x: f"{x+1}.", True),
+    (["bullet list", "bulleted list", "bulleted lists", "bullet lists"], fixed("*"), True),
+    (["number list", "numbered list", "numbered lists", "number lists"], lambda x: f"{x+1}.", True),
     (["horizontal rule"], fixed("---\n"), False),
 ]
 
@@ -59,7 +59,8 @@ def transcript_to_markdown(transcript: str) -> str:
             found_replacement = True
             i += 1
         if lower_case_transcript_tokens[i: i + 2] == ["finish", "item"]:
-            output_tokens.append("\n"+carried_element(element_count))
+            if carried_element is not None:
+                output_tokens.append("\n"+carried_element(element_count))
             found_replacement = True
             i += 1
             element_count += 1
