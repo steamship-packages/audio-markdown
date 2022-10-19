@@ -15,8 +15,6 @@ from steamship.plugin.config import Config
 
 from transcript_to_markdown import transcript_to_markdown
 
-PRIORITY_LABEL = "priority"
-
 
 class AudioMarkdownPackage(App):
     """Package that transcribes audio to Markdown using in-audio formatting cues."""
@@ -72,9 +70,9 @@ class AudioMarkdownPackage(App):
             file_id = json.loads(task.input)["id"]
             file = File.get(self.client, file_id).data
             transcript_text = file.blocks[0].text
-            logging.info(f"transcription text: {transcript_text}")
+            logging.debug(f"transcription text: {transcript_text}")
             markdown_text = transcript_to_markdown(transcript_text)
-            logging.info(f"markdown text: {transcript_text}")
+            logging.debug(f"markdown text: {transcript_text}")
             return Response(json={"markdown": markdown_text, "status": task.state})
 
     def _transcribe_audio_file(self, file) -> Response:
