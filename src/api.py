@@ -17,8 +17,8 @@ from transcript_to_markdown import transcript_to_markdown
 class AudioMarkdownPackage(PackageService):
     """Package that transcribes audio to Markdown using in-audio formatting cues."""
 
-    BLOCKIFIER_HANDLE = "whisper-s2t-blockifier-staging"
-    BLOCKIFIER_INSTANCE_HANDLE = "whisper-s2t-blockifier-staging-instance-001"
+    BLOCKIFIER_HANDLE = "whisper-s2t-blockifier"
+    BLOCKIFIER_INSTANCE_HANDLE = "whisper-s2t-blockifier-instance-001"
 
     def __init__(self, **kwargs):
         secret_kwargs = toml.load(str(Path(__file__).parent / ".steamship" / "secrets.toml"))

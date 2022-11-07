@@ -9,11 +9,11 @@ from steamship.base import TaskState
 
 from tests import TEST_DATA
 
-HANDLE = "audio-markdown-staging"
+HANDLE = "audio-markdown"
 
 
 def _get_instance():
-    client = Steamship(workspace="audio-markdown-staging-test-003")
+    client = Steamship(workspace="audio-markdown-test-0001")
     instance = PackageInstance.create(client, package_handle=HANDLE, config={})
     assert instance is not None
     assert instance.id is not None
